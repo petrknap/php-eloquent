@@ -5,9 +5,10 @@
 ## Casts
 
 ```php
+namespace PetrKnap\Eloquent\Casts;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-use PetrKnap\Eloquent\Casts\AsUtc;
 
 /**
  * @property Carbon $utc_attribute
@@ -15,6 +16,7 @@ use PetrKnap\Eloquent\Casts\AsUtc;
 final class SomeModel extends Model {
     protected function casts(): array {
         return [
+            'private_attribute' => AsPrivate::class,
             'utc_attribute' => AsUtc::dateTime(),
         ];
     }
