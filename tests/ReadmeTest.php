@@ -18,7 +18,20 @@ final class ReadmeTest extends TestCase implements MarkdownFileTestInterface
     {
         parent::setUp();
 
-        IlluminateDatabase::createCapsuleManager(new PDO('sqlite::memory:'))->bootEloquent();
+        $pdo = new PDO('sqlite::memory:');
+        $pdo->exec(
+            'CREATE TABLE some_models (
+                id INTEGER PRIMARY KEY,
+                utc_datetime DATETIME DEFAULT NULL,
+                local_datetime_utc DATETIME DEFAULT NULL,
+                local_datetime_timezone TEXT DEFAULT NULL,
+                -- Eloquent attributes
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT NULL
+            )',
+        );
+
+        IlluminateDatabase::createCapsuleManager($pdo)->bootEloquent();
     }
 
     public static function getPathToMarkdownFile(): string
