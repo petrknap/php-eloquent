@@ -7,31 +7,48 @@
 ```php
 namespace PetrKnap\Eloquent\Casts;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
 /**
- * @property Carbon $utc_attribute
+ * @property Carbon $local_datetime
+ * @property Carbon $utc_datetime
  */
-final class SomeModel extends Model {
-    protected function casts(): array {
+final class SomeModel extends Model
+{
+    protected function casts(): array
+    {
         return [
-            'private_attribute' => AsPrivate::class,
-            'utc_attribute' => AsUtc::dateTime(),
+            'utc_datetime' => AsUtc::dateTime(),
+            'local_datetime_utc' => AsUtc::dateTime(readonly: true),
+            'local_datetime_timezone' => AsPrivate::class,
         ];
+    }
+
+    protected function localDatetime(): Attribute
+    {
+        return AsUtc::withTimezone('local_datetime_utc', $this->getDateFormat(), 'local_datetime_timezone');
     }
 }
 
-$model = new SomeModel();
-$model->utc_attribute = Carbon::parse('2025-12-06 11:58:21 Europe/Prague');
+$datetime = Carbon::parse('2025-12-06 11:58:21 Europe/Prague');
 
-print_r($model->getAttributes());
+$model = new SomeModel();
+$model->utc_datetime = $datetime;
+$model->local_datetime = $datetime;
+$model->save();
+
+$model->refresh();
+printf(
+    "  UTC DT: %s %s\nLocal DT: %s %s\n",
+    $model->utc_datetime->toDateTimeString(), $model->utc_datetime->getTimezone(),
+    $model->local_datetime->toDateTimeString(), $model->local_datetime->getTimezone(),
+);
 ```
 ```
-Array
-(
-    [utc_attribute] => 2025-12-06 10:58:21
-)
+  UTC DT: 2025-12-06 10:58:21 UTC
+Local DT: 2025-12-06 11:58:21 Europe/Prague
 ```
 
 ---
