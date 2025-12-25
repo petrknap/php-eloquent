@@ -36,6 +36,7 @@
     "illuminate/contracts": "^11.0|^12.0",
     "illuminate/database": "^11.0|^12.0",
     "illuminate/support": "^11.0|^12.0",
+    "petrknap/optional": "^3.2",
     "petrknap/zoned-datetime-persistence": "^0.3.2"
   },
   "require-dev": {
@@ -48,6 +49,7 @@
   "scripts": {
     "test": "@test-implementation",
     "check-implementation": [
+      "composer update illuminate/* # TODO remove support for ^11.0 and this line",
       "phpcs --colors --standard=PSR12 --exclude=Generic.Files.LineLength src tests",
       "phpstan analyse --level max src --ansi --no-interaction",
       "phpstan analyse --level 5 tests --ansi --no-interaction",
