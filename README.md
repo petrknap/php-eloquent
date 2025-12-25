@@ -1,8 +1,13 @@
 # A collection of enhancements and helper classes for Eloquent
 
+- [Casts](#casts)
+- [Optional](#optional)
+
 
 
 ## Casts
+
+Casts are useful for **automatically converting values** between the database representation and the models native types.
 
 ```php
 namespace PetrKnap\Eloquent\Casts;
@@ -28,7 +33,11 @@ final class SomeModel extends Model
 
     protected function localDatetime(): Attribute
     {
-        return AsUtc::withTimezone('local_datetime_utc', $this->getDateFormat(), 'local_datetime_timezone');
+        return AsUtc::withTimezone(
+            'local_datetime_utc',
+            $this->getDateFormat(),
+            'local_datetime_timezone',
+        );
     }
 }
 
@@ -49,6 +58,30 @@ printf(
 ```
   UTC DT: 2025-12-06 10:58:21 UTC
 Local DT: 2025-12-06 11:58:21 Europe/Prague
+```
+
+
+
+## Optional
+
+Model options are helpful when you need to **delegate the decision** of how to handle a missing model to another part of the system.
+
+```php
+namespace PetrKnap\Eloquent;
+
+// someone selects the model as option
+$modelOption = Optional::ofNullable(
+    Some\Model::query()->where('value', '=', 'unique'),
+);
+
+// someone else decides that it must be found and prints it
+printf(
+    "There is exactly one %s result.\n",
+    $modelOption->orElseThrow()->value,
+);
+```
+```
+There is exactly one unique result.
 ```
 
 ---

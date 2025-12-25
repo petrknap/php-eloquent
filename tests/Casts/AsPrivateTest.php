@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PetrKnap\Eloquent\Casts;
 
-use Illuminate\Database\Eloquent\Model;
 use LogicException;
-use PHPUnit\Framework\TestCase;
+use PetrKnap\Eloquent\Some\Model;
+use PetrKnap\Eloquent\TestCase;
 
 final class AsPrivateTest extends TestCase
 {
@@ -16,14 +16,7 @@ final class AsPrivateTest extends TestCase
     {
         parent::setUp();
 
-        $this->model = new class () extends Model {
-            protected function casts(): array
-            {
-                return [
-                    'private_attribute' => AsPrivate::class,
-                ];
-            }
-        };
+        $this->model = new Model();
     }
 
     public function testDoesNotRead(): void
