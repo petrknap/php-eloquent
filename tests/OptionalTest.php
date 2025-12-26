@@ -7,8 +7,8 @@ namespace PetrKnap\Eloquent;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\MultipleRecordsFoundException;
 use Illuminate\Support\Collection;
-use Illuminate\Support\ItemNotFoundException;
 use Illuminate\Support\MultipleItemsFoundException;
+use PetrKnap\Optional\Exception;
 
 final class OptionalTest extends TestCase
 {
@@ -44,11 +44,16 @@ final class OptionalTest extends TestCase
         );
     }
 
-    public function testThrowsOnMissingModel(): void
+    public function testCorrectlyThrowsOnMissingModel(): void
     {
-        self::expectException(ModelNotFoundException::class);
-        self::expectExceptionMessage(sprintf('No query results for model [%s]', Some\Model::class));
-
-        Optional::empty(Some\Model::class)->orElseThrow();
+        $exception = null;
+        try {
+            Optional::ofNullable(
+                Some\Model::query()->where('value', '=', 'unknown'),
+            )->orElseThrow();
+        } catch (Exception\CouldNotGetValueOfEmptyOptional $exception) {
+            $exception = $exception->getPrevious();
+        }
+        self::assertInstanceOf(ModelNotFoundException::class, $exception);
     }
 }
