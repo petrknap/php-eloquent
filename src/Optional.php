@@ -20,30 +20,29 @@ use Throwable;
  */
 final class Optional extends OptionalObject
 {
-    private Throwable|null $constructionException = null;
+    private Throwable|null $notFoundException = null;
+
+    // @todo update optional and override `ofSingle` method, call `ofSole` if the input is `Builder` or `Enumerable`
 
     /**
-     * @param T|Builder<T>|Enumerable<array-key, T> $value
+     * An "illuminated" alternative to {@see Optional::ofSingle()}
+     *
+     * @param Builder<T>|Enumerable<array-key, T> $value
+     *
+     * @see Builder::sole()
+     * @see Enumerable::sole()
      */
-    public static function of(mixed $value): static
+    public static function ofSole(Builder|Enumerable $value): static
     {
-        return parent::of(self::unwrapValue($value));
-    }
-
-    /**
-     * @param T|null|Builder<T>|Enumerable<array-key, T> $value
-     */
-    public static function ofNullable(mixed $value): static
-    {
-        $exception = null;
         try {
-            $model = $value !== null ? self::unwrapValue($value) : null;
-        } catch (ItemNotFoundException | ModelNotFoundException $exception) {
+            $model = $value->sole();
+            $notFoundException = null;
+        } catch (ItemNotFoundException | ModelNotFoundException $notFoundException) {
             $model = null;
         }
-        $modelOption = parent::ofNullable($model);
-        $modelOption->constructionException = $exception;
-        return $modelOption;
+        $self = self::ofNullable($model);
+        $self->notFoundException = $notFoundException;
+        return $self;
     }
 
     public function orElseThrow(
@@ -53,8 +52,8 @@ final class Optional extends OptionalObject
         return parent::orElseThrow(
             $exceptionSupplier
                 ?? fn (string|null $message): Exception\CouldNotGetValueOfEmptyOptional => $message === null
-                ? new Exception\CouldNotGetValueOfEmptyOptional(previous: $this->constructionException)
-                : new Exception\CouldNotGetValueOfEmptyOptional($message, previous: $this->constructionException),
+                ? new Exception\CouldNotGetValueOfEmptyOptional(previous: $this->notFoundException)
+                : new Exception\CouldNotGetValueOfEmptyOptional($message, previous: $this->notFoundException),
             $message,
         );
     }
@@ -62,21 +61,5 @@ final class Optional extends OptionalObject
     protected static function getInstanceOf(): string
     {
         return Model::class;
-    }
-
-    /**
-     * @param T|Builder<T>|Enumerable<array-key, T> $value
-     *
-     * @return T
-     *
-     * @throws Throwable
-     */
-    private static function unwrapValue(mixed $value): mixed
-    {
-        /** @var T */
-        return match (true) {
-            $value instanceof Builder, $value instanceof Enumerable => $value->sole(),
-            default => $value,
-        };
     }
 }

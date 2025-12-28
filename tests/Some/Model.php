@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model as Base;
 use PetrKnap\Eloquent\Casts\AsPrivate;
 
 /**
+ * @property-read int|null $id
  * @property string $value
  */
 final class Model extends Base

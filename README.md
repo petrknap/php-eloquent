@@ -70,7 +70,7 @@ Model options are helpful when you need to **delegate the decision** of how to h
 namespace PetrKnap\Eloquent;
 
 // someone selects the model as option
-$modelOption = Optional::ofNullable(
+$modelOption = Optional::ofSole(
     Some\Model::query()->where('value', '=', 'unique'),
 );
 

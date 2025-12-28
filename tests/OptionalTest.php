@@ -14,32 +14,32 @@ final class OptionalTest extends TestCase
 {
     public function testCreatesItselfFromBuilder(): void
     {
-        self::assertFalse(Optional::ofNullable(
+        self::assertFalse(Optional::ofSole(
             Some\Model::query()->where('value', '=', 'unknown'),
         )->isPresent());
 
-        self::assertInstanceOf(Some\Model::class, Optional::ofNullable(
+        self::assertInstanceOf(Some\Model::class, Optional::ofSole(
             Some\Model::query()->where('value', '=', 'unique'),
         )->orElseThrow());
 
         self::expectException(MultipleRecordsFoundException::class);
-        Optional::ofNullable(
+        Optional::ofSole(
             Some\Model::query()->where('value', '=', 'common'),
         );
     }
 
     public function testCreatesItselfFromEnumerable(): void
     {
-        self::assertFalse(Optional::ofNullable(
+        self::assertFalse(Optional::ofSole(
             new Collection([]),
         )->isPresent());
 
-        self::assertInstanceOf(Some\Model::class, Optional::ofNullable(
+        self::assertInstanceOf(Some\Model::class, Optional::ofSole(
             new Collection([new Some\Model()]),
         )->orElseThrow());
 
         self::expectException(MultipleItemsFoundException::class);
-        Optional::ofNullable(
+        Optional::ofSole(
             new Collection([new Some\Model(), new Some\Model()]),
         );
     }
@@ -48,7 +48,7 @@ final class OptionalTest extends TestCase
     {
         $exception = null;
         try {
-            Optional::ofNullable(
+            Optional::ofSole(
                 Some\Model::query()->where('value', '=', 'unknown'),
             )->orElseThrow();
         } catch (Exception\CouldNotGetValueOfEmptyOptional $exception) {
