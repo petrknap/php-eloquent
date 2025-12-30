@@ -1,13 +1,14 @@
 # A collection of enhancements and helper classes for Eloquent
 
 - [Casts](#casts)
-- [Optional](#optional)
+- [Optionals](#optionals)
+- [Repositories](#repositories)
 
 
 
-## Casts
+## [Casts](./src/Casts/)
 
-Casts are useful for **automatically converting values** between the database representation and the models native types.
+Casts define **how values move between the database and your domain**, ensuring each field is automatically transformed into the model’s native type.
 
 ```php
 namespace PetrKnap\Eloquent\Casts;
@@ -62,9 +63,10 @@ Local DT: 2025-12-06 11:58:21 Europe/Prague
 
 
 
-## Optional
+## Optionals
 
-Model options are helpful when you need to **delegate the decision** of how to handle a missing model to another part of the system.
+Optionals let you **delegate the handling of missing models** to another layer of your application.
+Instead of forcing a decision at the point of retrieval, they give you a structured way to express uncertainty and decide later how absence should be interpreted.
 
 ```php
 namespace PetrKnap\Eloquent;
@@ -82,6 +84,65 @@ printf(
 ```
 ```
 There is exactly one unique result.
+```
+
+
+
+## Repositories
+
+Repositories provide a **clean, expressive interface** for working with your data layer.
+They encapsulate all persistence logic—queries, inserts, updates, and deletes—so the rest of your application can interact with models through a consistent, intention‑revealing API.
+By centralizing data access, repositories help keep your domain logic focused and testable.
+
+```php
+namespace PetrKnap\Eloquent;
+
+function some_update(Some\ModelRepository $modelRepository): void
+{
+    $modelRepository->getConnection()->transaction(function () use ($modelRepository): void
+    {
+        foreach ($modelRepository->findByValue('common', lockForUpdate: true) as $commonModel)
+        {
+            $commonModel->value .= ' #' . $commonModel->id;
+            $modelRepository->save($commonModel);
+        }
+    });
+}
+some_update(new Some\ModelRepository());
+
+use Illuminate\Database\Connection;
+use Illuminate\Support\Collection;
+use PHPUnit\Framework\TestCase;
+
+class SomeTest extends TestCase
+{
+    public function testUpdates(): void
+    {
+        $model = new Some\Model();
+        $model->id = 1;
+        $model->value = 'common';
+
+        $connection = self::createMock(Connection::class);
+        $connection->expects(self::once())->method('transaction')
+            ->willReturnCallback(fn (callable $callback): mixed => $callback($connection));
+
+        $repository = self::createMock(Some\ModelRepository::class);
+        $repository->expects(self::once())->method('getConnection')
+            ->willReturn($connection);
+        $repository->expects(self::once())->method('findByValue')
+            ->with($model->value, true)
+            ->willReturn(new Collection([$model]));
+        $repository->expects(self::once())->method('save')
+            ->with($model)
+            ->willReturnCallback(function (Some\Model $model): Some\Model {
+                self::assertSame('common #1', $model->value);
+                return $model;
+            });
+
+        some_update($repository);
+    }
+}
+(new SomeTest('example'))->testUpdates();
 ```
 
 ---
