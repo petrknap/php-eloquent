@@ -14,9 +14,9 @@ use PetrKnap\Optional\OptionalObject;
 use Throwable;
 
 /**
- * @template T of Model
+ * @template TModel of Model
  *
- * @extends OptionalObject<T>
+ * @extends OptionalObject<TModel>
  */
 final class Optional extends OptionalObject
 {
@@ -27,7 +27,7 @@ final class Optional extends OptionalObject
     /**
      * An "illuminated" alternative to {@see Optional::ofSingle()}
      *
-     * @param Builder<T>|Enumerable<array-key, T> $value
+     * @param Builder<TModel>|Enumerable<array-key, TModel> $value
      *
      * @see Builder::sole()
      * @see Enumerable::sole()

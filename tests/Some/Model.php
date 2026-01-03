@@ -11,7 +11,7 @@ use PetrKnap\Eloquent\Casts\AsPrivate;
  * @property-read int|null $id
  * @property string $value
  */
-final class Model extends Base
+class Model extends Base
 {
     protected function casts(): array
     {

@@ -38,6 +38,7 @@ final class ReadmeTest extends TestCase implements MarkdownFileTestInterface
         return [
             'casts' => self::OUTPUT_IN_MARKDOWN,
             Optional::class => self::OUTPUT_IN_MARKDOWN,
+            Repository::class => '',
         ];
     }
 }
