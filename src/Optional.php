@@ -27,12 +27,16 @@ final class Optional extends OptionalObject
     /**
      * An "illuminated" alternative to {@see Optional::ofSingle()}
      *
-     * @param Builder<TModel>|Enumerable<array-key, TModel> $value
+     * @template UModel of TModel
+     *
+     * @param Builder<UModel>|Enumerable<array-key, UModel> $value
+     *
+     * @return self<UModel>
      *
      * @see Builder::sole()
      * @see Enumerable::sole()
      */
-    public static function ofSole(Builder|Enumerable $value): static
+    public static function ofSole(Builder|Enumerable $value): self
     {
         try {
             $model = $value->sole();
@@ -40,9 +44,9 @@ final class Optional extends OptionalObject
         } catch (ItemNotFoundException | ModelNotFoundException $notFoundException) {
             $model = null;
         }
-        $self = self::ofNullable($model);
+        $self = self::ofNullable($model); // @phpstan-ignore argument.type
         $self->notFoundException = $notFoundException;
-        return $self;
+        return $self; // @phpstan-ignore return.type
     }
 
     public function orElseThrow(
