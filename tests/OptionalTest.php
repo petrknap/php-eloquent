@@ -44,6 +44,24 @@ final class OptionalTest extends TestCase
         );
     }
 
+    public function testCreatesItselfFromRelation(): void
+    {
+        $models = (new Some\ModelRepository())->find([1, 2]);
+
+        self::assertFalse(Optional::ofSole(
+            $models->get(1)->parent(),
+        )->isPresent());
+
+        self::assertInstanceOf(Some\Model::class, Optional::ofSole(
+            $models->get(1)->children(),
+        )->orElseThrow());
+
+        self::expectException(MultipleRecordsFoundException::class);
+        Optional::ofSole(
+            $models->get(2)->children(),
+        );
+    }
+
     public function testCorrectlyThrowsOnMissingModel(): void
     {
         $exception = null;

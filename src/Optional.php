@@ -7,6 +7,7 @@ namespace PetrKnap\Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Enumerable;
 use Illuminate\Support\ItemNotFoundException;
 use PetrKnap\Optional\Exception;
@@ -29,14 +30,15 @@ final class Optional extends OptionalObject
      *
      * @template UModel of TModel
      *
-     * @param Builder<UModel>|Enumerable<array-key, UModel> $value
+     * @param Builder<UModel>|Enumerable<array-key, UModel>|Relation<UModel, Model, mixed> $value
      *
      * @return self<UModel>
      *
      * @see Builder::sole()
      * @see Enumerable::sole()
+     * @see Relation::sole()
      */
-    public static function ofSole(Builder|Enumerable $value): self
+    public static function ofSole(Builder|Enumerable|Relation $value): self
     {
         try {
             $model = $value->sole();
