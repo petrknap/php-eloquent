@@ -108,7 +108,12 @@ function some_update(Some\ModelRepository $modelRepository): void
         }
     });
 }
+
 some_update(new Some\ModelRepository());
+```
+
+```php
+namespace PetrKnap\Eloquent;
 
 use Illuminate\Database\Connection;
 use Illuminate\Support\Collection;
@@ -142,6 +147,7 @@ class SomeTest extends TestCase
         some_update($repository);
     }
 }
+
 (new SomeTest('example'))->testUpdates();
 ```
 
