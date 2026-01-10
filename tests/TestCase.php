@@ -20,6 +20,7 @@ abstract class TestCase extends Base
         $this->pdo->exec(
             'CREATE TABLE models (
                 value TEXT NOT NULL,
+                parent_id INTEGER NULL,
                 -- Eloquent attributes
                 id INTEGER PRIMARY KEY,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -27,10 +28,11 @@ abstract class TestCase extends Base
             )',
         );
 
-        $insert = $this->pdo->prepare('INSERT INTO models (value) VALUES (?)');
-        $insert->execute(['unique']);
-        $insert->execute(['common']);
-        $insert->execute(['common']);
+        $insert = $this->pdo->prepare('INSERT INTO models (value, parent_id) VALUES (?, ?)');
+        $insert->execute(['unique', null]);
+        $insert->execute(['common', 1]);
+        $insert->execute(['common', 2]);
+        $insert->execute(['common', 2]);
 
         IlluminateDatabase::createCapsuleManager($this->pdo)->bootEloquent();
     }

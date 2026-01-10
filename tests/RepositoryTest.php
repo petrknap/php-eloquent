@@ -56,7 +56,7 @@ final class RepositoryTest extends TestCase
     #[Group(Model::class)]
     public function testGetsAllOfTheModelsFromTheDatabase(): void
     {
-        self::assertCount(3, $this->repository->all());
+        self::assertCount(4, $this->repository->all());
     }
 
     #[Group(Model::class)]
