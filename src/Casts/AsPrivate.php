@@ -18,8 +18,12 @@ final class AsPrivate implements CastsAttributes
         return null;
     }
 
-    public function set(Model $model, string $key, mixed $value, array $attributes): never
+    public function set(Model $model, string $key, mixed $value, array $attributes): mixed
     {
+        if ($value === null) { // Eloquent sometimes calls setter with the cast value
+            return $attributes[$key];
+        }
+
         throw new LogicException(sprintf('%s::$%s is private', get_class($model), $key));
     }
 }
