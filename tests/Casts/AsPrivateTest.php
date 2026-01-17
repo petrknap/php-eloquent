@@ -43,17 +43,15 @@ final class AsPrivateTest extends TestCase
         $this->model->private_attribute = 1; // @phpstan-ignore property.notFound
     }
 
-    /**
-     * Eloquent sometime calls seter with cast value
-     */
-    public function testDoesNotChangeValue(): void
+    public function testDoesNotFailOrChangeOnCachedValue(): void
     {
         $attributes = [
             'private_attribute' => 1,
         ];
         $this->model->__setAttributes($attributes); // @phpstan-ignore method.notFound
+        $cachedValue = $this->model->private_attribute; // @phpstan-ignore property.notFound
 
-        $this->model->private_attribute = $this->model->non_existent_atributte; // @phpstan-ignore property.notFound, property.notFound
+        $this->model->private_attribute = $cachedValue; // @phpstan-ignore property.notFound
 
         self::assertEquals($attributes, $this->model->__getAttributes()); // @phpstan-ignore method.notFound
     }
