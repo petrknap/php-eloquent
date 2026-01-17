@@ -2,7 +2,8 @@
 
 declare(strict_types=1);
 
-class_alias(
-    PetrKnap\Persistence\ZonedDateTime\AsUtc::class,
-    'PetrKnap\\Eloquent\\Casts\\AsUtc',
-);
+namespace PetrKnap\Eloquent\Casts;
+
+abstract class AsUtc extends \PetrKnap\Persistence\ZonedDateTime\AsUtc
+{
+}
