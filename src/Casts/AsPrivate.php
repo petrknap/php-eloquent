@@ -20,7 +20,7 @@ final class AsPrivate implements CastsAttributes
 
     public function set(Model $model, string $key, mixed $value, array $attributes): mixed
     {
-        if ($value === null) { // Eloquent sometimes calls setter with the cast value
+        if ($value === null) { // Eloquent sometimes calls setter with cached value
             return $attributes[$key];
         }
 
