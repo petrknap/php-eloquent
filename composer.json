@@ -33,9 +33,9 @@
   "name": "petrknap/eloquent",
   "require": {
     "php": ">=8.2",
-    "illuminate/contracts": "^11.0|^12.0",
-    "illuminate/database": "^11.0|^12.0",
-    "illuminate/support": "^11.0|^12.0",
+    "illuminate/contracts": "^12.0|^13.0",
+    "illuminate/database": "^12.0|^13.0",
+    "illuminate/support": "^12.0|^13.0",
     "petrknap/optional": "^3.2",
     "petrknap/zoned-datetime-persistence": "^0.3.4"
   },
@@ -49,7 +49,6 @@
   "scripts": {
     "test": "@test-implementation",
     "check-implementation": [
-      "composer update illuminate/* # TODO remove support for ^11.0 and this line",
       "phpcs --colors --standard=PSR12 --exclude=Generic.Files.LineLength src tests",
       "phpstan analyse --level max src --ansi --no-interaction",
       "phpstan analyse --level 5 tests --ansi --no-interaction",
