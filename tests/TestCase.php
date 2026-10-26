@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace PetrKnap\Eloquent;
 
+use Illuminate\Contracts\Foundation\Application;
 use PDO;
+use PetrKnap\Eloquent\Providers\EloquentServiceProvider;
 use PetrKnap\Shorts\Testing\IlluminateDatabase;
 use PHPUnit\Framework\TestCase as Base;
 
@@ -34,6 +36,7 @@ abstract class TestCase extends Base
         $insert->execute(['common', 2]);
         $insert->execute(['common', 2]);
 
+        (new EloquentServiceProvider(self::createStub(Application::class)))->boot();
         IlluminateDatabase::createCapsuleManager($this->pdo)->bootEloquent();
     }
 }

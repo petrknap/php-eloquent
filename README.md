@@ -72,9 +72,9 @@ Instead of forcing a decision at the point of retrieval, they give you a structu
 namespace PetrKnap\Eloquent;
 
 // someone selects the model as option
-$modelOption = Optional::ofSole(
-    Some\Model::query()->where('value', '=', 'unique'),
-);
+$modelOption = Some\Model::query()
+    ->where('value', '=', 'unique')
+    ->option();
 
 // someone else decides that it must be found and prints it
 printf(
@@ -86,6 +86,28 @@ printf(
 There is exactly one unique result.
 ```
 
+If you prefer standard PHP nullable types over a monadic `Optional` object, you can use `soleOrNull()` to retrieve either the model or null (while still ensuring no unexpected duplicates exist).
+
+```php
+namespace PetrKnap\Eloquent;
+
+$model = Some\Model::query()
+    ->where('value', '=', 'unique')
+    ->soleOrNull();
+
+if ($model === null) {
+    throw new \Exception('Model Not Found');
+}
+printf(
+    "There is exactly one %s result.\n",
+    $model->value,
+);
+```
+```
+There is exactly one unique result.
+```
+
+**Note:** While `option()` preserves the underlying `ModelNotFoundException` as the previous exception when calling `orElseThrow()`, `soleOrNull()` discards this context and simply returns `null`.
 
 
 ## Repositories

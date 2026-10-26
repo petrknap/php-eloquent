@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PetrKnap\Eloquent;
 
+use PetrKnap\Eloquent\Mixins\BuilderMixin;
 use PetrKnap\Shorts\PhpUnit\MarkdownFileTestInterface;
 use PetrKnap\Shorts\PhpUnit\MarkdownFileTestTrait;
 
@@ -37,7 +38,8 @@ final class ReadmeTest extends TestCase implements MarkdownFileTestInterface
     {
         return [
             'casts' => self::OUTPUT_IN_MARKDOWN,
-            Optional::class => self::OUTPUT_IN_MARKDOWN,
+            BuilderMixin::class . '::option()' => self::OUTPUT_IN_MARKDOWN,
+            BuilderMixin::class . '::soleOrNull()' => self::OUTPUT_IN_MARKDOWN,
             Repository::class => '',
         ];
     }

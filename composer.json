@@ -36,7 +36,7 @@
     "illuminate/contracts": "^12.0|^13.0",
     "illuminate/database": "^12.0|^13.0",
     "illuminate/support": "^12.0|^13.0",
-    "petrknap/optional": "^3.2",
+    "petrknap/optional": "^3.5",
     "petrknap/zoned-datetime-persistence": "^0.3.4"
   },
   "require-dev": {

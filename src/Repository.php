@@ -98,7 +98,7 @@ abstract class Repository
      *
      * @return Builder<TModel>
      * - use {@see Builder::lazy()} when {@see Enumerable} may be large
-     * - use {@see Optional::ofSole()} when {@see Model} may be absent
+     * - use {@see Builder::option()} ({@see Optional::ofSole()}) when {@see Model} may be absent
      * - use {@see Builder::sole()} when {@see Model} must be present
      *
      * @see Model::newQuery()
