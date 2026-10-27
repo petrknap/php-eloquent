@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PetrKnap\Eloquent;
 
 use Illuminate\Database\Connection;
+use Illuminate\Database\DatabaseTransactionsManager;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
@@ -34,7 +35,7 @@ final class RepositoryTest extends TestCase
     }
 
     #[Group(Builder::class)]
-    public function testFindsAModelsByItsPrimaryKeys(): void
+    public function testFindsModelsByTheirPrimaryKeys(): void
     {
         self::assertSame(
             [2 => 2, 3 => 3],
@@ -49,6 +50,34 @@ final class RepositoryTest extends TestCase
     public function testGetsTheDatabaseConnectionInstance(): void
     {
         self::assertInstanceOf(Connection::class, $this->repository->getConnection());
+    }
+    #endregion
+
+    #region Connection related tests
+    public function testTransactionCommitsAndReturnsOnSuccess(): void
+    {
+        $transactionManager = $this->createMock(DatabaseTransactionsManager::class);
+        $transactionManager->expects($this->once())->method('begin');
+        $transactionManager->expects($this->once())->method('commit');
+        (new class () extends Model {
+        })->getConnection()->setTransactionManager($transactionManager);
+
+        $this->assertSame(
+            'test',
+            $this->repository->transaction(fn(): string => 'test'),
+        );
+    }
+
+    public function testTransactionRollsBackAndThrowsOnFailure(): void
+    {
+        $transactionManager = $this->createMock(DatabaseTransactionsManager::class);
+        $transactionManager->expects($this->once())->method('begin');
+        $transactionManager->expects($this->once())->method('rollback');
+        (new class () extends Model {
+        })->getConnection()->setTransactionManager($transactionManager);
+
+        $this->expectExceptionObject(new \LogicException('test'));
+        $this->repository->transaction(fn (): mixed => throw new \LogicException('test'));
     }
     #endregion
 
