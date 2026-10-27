@@ -66,5 +66,12 @@
       "@check-requirements",
       "@test-implementation"
     ]
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "PetrKnap\\Eloquent\\Providers\\EloquentServiceProvider"
+      ]
+    }
   }
 }
