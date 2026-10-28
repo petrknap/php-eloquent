@@ -41,6 +41,7 @@ final class ReadmeTest extends TestCase implements MarkdownFileTestInterface
             BuilderMixin::class . '::option()' => self::OUTPUT_IN_MARKDOWN,
             BuilderMixin::class . '::soleOrNull()' => self::OUTPUT_IN_MARKDOWN,
             Repository::class => '',
+            Repository::class . 'Test' => '',
         ];
     }
 }
