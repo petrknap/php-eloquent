@@ -121,8 +121,7 @@ namespace PetrKnap\Eloquent;
 
 function some_update(Some\ModelRepository $modelRepository): void
 {
-    $modelRepository->getConnection()->transaction(function () use ($modelRepository): void
-    {
+    $modelRepository->transaction(function (Some\ModelRepository $modelRepository): void {
         foreach ($modelRepository->findByValue('common', lockForUpdate: true) as $commonModel)
         {
             $commonModel->value .= ' #' . $commonModel->id;

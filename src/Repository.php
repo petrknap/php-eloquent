@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Enumerable;
 use InvalidArgumentException;
+use Throwable;
 
 /**
  * @template TModel of Model
@@ -50,6 +51,29 @@ abstract class Repository
     public function getConnection(): ConnectionInterface
     {
         return $this->newQuery()->getConnection();
+    }
+    #endregion
+
+    #region Connection related methods
+    /**
+     * Execute a Closure within a transaction.
+     *
+     * @template TReturn of mixed
+     *
+     * @param callable(static): TReturn $callback
+     *
+     * @return TReturn
+     *
+     * @throws Throwable
+     *
+     * @see ConnectionInterface::transaction()
+     */
+    public function transaction(callable $callback, int $attempts = 1): mixed
+    {
+        return $this->getConnection()->transaction(
+            fn (): mixed => $callback($this),
+            attempts: $attempts,
+        );
     }
     #endregion
 
