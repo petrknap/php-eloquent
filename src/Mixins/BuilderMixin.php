@@ -9,31 +9,39 @@ use Illuminate\Database\Eloquent\Model;
 use PetrKnap\Eloquent\Optional;
 
 /**
- * @template T of Model
+ * @template TModel of Model
+ *
+ * @note Template `TModel` must be defined the same way AS IS definded in `barryvdh/laravel-ide-helper`.
+ * @note Internal returns must use fully qualified class names.
  */
 final class BuilderMixin
 {
     /**
-     * @return callable(): Optional<T>
+     * @return callable(): Optional<TModel>
      */
     public function option(): callable
     {
-        /** @var callable(): Optional<T> */
+        /**
+         * @return \PetrKnap\Eloquent\Optional<TModel>
+         */
         return function (): Optional {
-            /** @var Builder<T> $this */
+            /** @var Builder<TModel> $this */
             return Optional::ofSole($this);
         };
     }
 
     /**
-     * @return callable(): ?T
+     * @return callable(): (TModel|null)
      */
     public function soleOrNull(): callable
     {
+        /**
+         * @return (TModel|null)
+         */
         return function (): ?Model {
             /**
-             * @var Builder<T> $this
-             * @var Optional<T> $option
+             * @var Builder<TModel> $this
+             * @var Optional<TModel> $option
              */
             $option = $this->option(); // @phpstan-ignore method.notFound
             return $option->orElse(null);
